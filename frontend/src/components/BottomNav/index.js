@@ -7,7 +7,7 @@ const BottomNav = () => {
     return (
         <View style={{
             height: 54,
-            backgroundColor: 'green',
+            backgroundColor: '#FFFFFF',
             flexDirection: 'row',
             justifyContent: 'space-around',
             alignItems: 'center'
