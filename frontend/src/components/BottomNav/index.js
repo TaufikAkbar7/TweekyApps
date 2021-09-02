@@ -1,9 +1,9 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Pressable } from 'react-native'
 import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons'
 import AntIcon from 'react-native-vector-icons/AntDesign'
 
-const BottomNav = () => {
+const BottomNav = ({ navigator }) => {
     return (
         <View style={{
             height: 54,
@@ -13,13 +13,19 @@ const BottomNav = () => {
             alignItems: 'center'
         }}>
             <View>
-                <SimpleIcon name="home" size={20} color="#000" />
+                <Pressable onPress={() => navigator.navigate('Home')}>
+                    <SimpleIcon name="home" size={20} color="#000" />
+                </Pressable>
             </View>
             <View>
-                <AntIcon name="search1" size={20} color="#000" />
+                <Pressable onPress={() => navigator.navigate('Search')}>
+                    <AntIcon name="search1" size={20} color="#000" />
+                </Pressable>
             </View>
             <View>
-                <AntIcon name="user" size={20} color="#000" />
+                <Pressable onPress={() => navigator.navigate('Profile')}>
+                    <AntIcon name="user" size={20} color="#000" />
+                </Pressable>
             </View>
         </View>
     )
