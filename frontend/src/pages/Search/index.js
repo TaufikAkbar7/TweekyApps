@@ -2,7 +2,7 @@ import React from 'react'
 import { View, ScrollView, TouchableOpacity, Text } from 'react-native'
 import { ListItem, Avatar } from 'react-native-elements'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { BottomNav, Search } from '../../components'
+import { Search } from '../../components'
 import { data } from '../../config/dummy'
 
 const SearchScreen = ({ navigation }) => {
@@ -51,7 +51,6 @@ const SearchScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
             </View>
-            <BottomNav navigator={navigation}/>
         </SafeAreaView>
     )
 }

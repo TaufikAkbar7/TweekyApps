@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, Text, ScrollView, Image, Pressable } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { BottomNav } from '../../components'
 import { profile, data } from '../../config/dummy'
 import { Avatar, Card, } from 'react-native-elements'
 import AntIcon from 'react-native-vector-icons/AntDesign'
@@ -9,7 +8,15 @@ import FontIcon from 'react-native-vector-icons/FontAwesome'
 
 const ProfileScreen = ({ navigation }) => {
 
-    const { username, name, tweets, user_image, bio, followers, following } = profile;
+    const { 
+        username, 
+        name, 
+        tweets, 
+        user_image, 
+        bio, 
+        followers, 
+        following 
+    } = profile;
 
     return (
         <SafeAreaView style={{
@@ -24,11 +31,10 @@ const ProfileScreen = ({ navigation }) => {
                 <ScrollView>
                     <View style={{
                         width: 360,
+                        // backgroundColor: 'red'
                     }}>
                         <View style={{
                             height: 300,
-                            borderBottomWidth: 1,
-                            borderColor: '#A9A9B0'
                             // backgroundColor: 'red'
                         }}>
                             <View style={{
@@ -111,6 +117,12 @@ const ProfileScreen = ({ navigation }) => {
                             </View>
                             </View>
                         </View>
+                        <View style={{ 
+                            // backgroundColor: 'blue', 
+                            marginVertical: 5,
+                            borderTopWidth: 1,
+                            borderColor: '#A9A9B0' 
+                            }}>
                         {data.map(item => (
                             <Card key={item.id} containerStyle={{
                                 backgroundColor: '#FFFFFF',
@@ -160,10 +172,10 @@ const ProfileScreen = ({ navigation }) => {
                                 </View>
                             </Card>
                         ))}
+                        </View>
                     </View>
                 </ScrollView>
             </View>
-            <BottomNav navigator={navigation} />
         </SafeAreaView>
     )
 }

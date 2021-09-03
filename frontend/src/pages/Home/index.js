@@ -35,6 +35,7 @@ const HomeScreen = ({ navigation }) => {
                                 <FeatherIcon name="mail" size={25} color="#000" />
                             </Pressable>
                         </View>
+                        <View style={{marginVertical: 5}}>
                         {data.map(item => (
                             <Card key={item.id} containerStyle={{
                                 backgroundColor: '#FFFFFF',
@@ -84,6 +85,7 @@ const HomeScreen = ({ navigation }) => {
                                 </View>
                             </Card>
                         ))}
+                        </View>
                     </View>
                 </ScrollView>
                 <FAB
@@ -93,7 +95,7 @@ const HomeScreen = ({ navigation }) => {
                     icon={<FeatherIcon name="plus" color="#FFFFFF" size={20} />}
                 />
             </View>
-            <BottomNav navigator={navigation}/>
+            {/* <BottomNav navigator={navigation}/> */}
         </SafeAreaView>
     )
 }
