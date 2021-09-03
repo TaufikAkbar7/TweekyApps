@@ -20,7 +20,6 @@ const SearchScreen = ({ navigation }) => {
                     <View style={{
                         width: 325,
                         marginTop: 20,
-                        // backgroundColor: 'red'
                     }}>
                         <View>
                             <Search placeholder='search...'/>

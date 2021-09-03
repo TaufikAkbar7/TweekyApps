@@ -59,3 +59,21 @@ export const messages = [
         user_image: 'https://source.unsplash.com/random',
     },
 ]
+
+export const profile = {
+    id: 1,
+    username: '@johnDoe12',
+    name: 'JohnDoe',
+    following: 40,
+    followers: 2500,
+    bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+    tweets: [
+        {
+            tweet: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'
+        },
+        {
+            tweet: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'
+        },
+    ], 
+    user_image: 'https://source.unsplash.com/random',
+}
