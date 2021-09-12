@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { Avatar } from 'react-native-elements'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { BottomNav, Search } from '../../components'
+import { Search } from '../../components'
 import { messages } from '../../config/dummy'
 
 const MessageScreen = ({ navigation }) => {
@@ -61,7 +61,6 @@ const MessageScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
             </View>
-            <BottomNav navigator={navigation} />
         </SafeAreaView>
     )
 }

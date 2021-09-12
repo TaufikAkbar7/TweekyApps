@@ -1,7 +1,15 @@
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { HomeScreen, MessageScreen, SearchScreen, ProfileScreen, MessageDetailScreen } from '../pages';
+import {
+    HomeScreen,
+    MessageScreen,
+    SearchScreen,
+    ProfileScreen,
+    MessageDetailScreen,
+    LoginScreen,
+    RegisterScreen
+} from '../pages';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicon from 'react-native-vector-icons/Ionicons'
 
@@ -12,27 +20,27 @@ const Routes = () => {
 
     const TabStack = () => {
         return (
-            <Tab.Navigator 
-            screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconName;
-                    
-                    switch(route.name){
-                        case 'Home':
-                            iconName = focused ? 'home' : 'home-outline'
-                            break;
-                        case 'Search':
-                            iconName = focused ? 'search' : 'search-outline'
-                            break;
-                        case 'Profile':
-                            iconName = focused ? 'person-circle' : 'person-circle-outline'
-                    }
+            <Tab.Navigator
+                screenOptions={({ route }) => ({
+                    tabBarIcon: ({ focused, color, size }) => {
+                        let iconName;
 
-                    return <Ionicon name={iconName} size={size} color={color}/>
-                },
-                tabBarActiveTintColor: "#1D9BF0",
-                tabBarInactiveTintColor: "#000",
-            })}>
+                        switch (route.name) {
+                            case 'Home':
+                                iconName = focused ? 'home' : 'home-outline'
+                                break;
+                            case 'Search':
+                                iconName = focused ? 'search' : 'search-outline'
+                                break;
+                            case 'Profile':
+                                iconName = focused ? 'person-circle' : 'person-circle-outline'
+                        }
+
+                        return <Ionicon name={iconName} size={size} color={color} />
+                    },
+                    tabBarActiveTintColor: "#1D9BF0",
+                    tabBarInactiveTintColor: "#000",
+                })}>
                 <Tab.Screen
                     name="Home"
                     component={HomeScreen}
@@ -55,6 +63,14 @@ const Routes = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator>
+                <Stack.Screen
+                    name="Login"
+                    component={LoginScreen}
+                />
+                <Stack.Screen
+                    name="Register"
+                    component={RegisterScreen}
+                />
                 <Stack.Screen
                     name="TabScreen"
                     component={TabStack}
