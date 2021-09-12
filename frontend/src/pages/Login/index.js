@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Pressable, Text } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Input } from 'react-native-elements'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-// import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import auth from '@react-native-firebase/auth'
 
 const LoginScreen = ({ navigation }) => {
@@ -15,30 +15,35 @@ const LoginScreen = ({ navigation }) => {
     const onSubmit = async () => {
         try {
             auth()
-            .signInWithEmailAndPassword(email, password)
-            .then(() => navigation.navigate('TabScreen', { screen: 'Home' }))
-            .catch((err => {
-                switch(err.code) {
-                    case 'auth/invalid-email':
-                        alert('email address is not valid')
-                        break;
-                    case 'auth/user-disabled':
-                        alert('email has been disabled')
-                        break;
-                    case 'auth/user-not-found':
-                        alert('user not found')
-                        break;
-                    case 'auth/wrong-password':
-                        alert('password is invalid, try again')
-                        break;
-                }
-            }))
-
-            // let dataAkun = {
-            //     email: email,
-            //     password: password
-            // }
-            // await AsyncStorage.setItem('akun', JSON.stringify(dataAkun))
+                .signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    try {
+                        let dataAkun = {
+                            email: email,
+                            password: password
+                        }
+                        AsyncStorage.setItem('akun', JSON.stringify(dataAkun))
+                        navigation.navigate('TabScreen', { screen: 'Home' })
+                    } catch (error) {
+                        console.log(err)
+                    }
+                })
+                .catch((err => {
+                    switch (err.code) {
+                        case 'auth/invalid-email':
+                            alert('email address is not valid')
+                            break;
+                        case 'auth/user-disabled':
+                            alert('email has been disabled')
+                            break;
+                        case 'auth/user-not-found':
+                            alert('user not found')
+                            break;
+                        case 'auth/wrong-password':
+                            alert('password is invalid, try again')
+                            break;
+                    }
+                }))
         } catch (error) {
             console.log(error)
         }
@@ -59,7 +64,7 @@ const LoginScreen = ({ navigation }) => {
     //         .then(response => {
     //             return response != null ? JSON.parse(response) : null
     //         })
-            
+
     //     } catch (e) {
     //         console.log(e);
     //     }

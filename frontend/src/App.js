@@ -1,8 +1,167 @@
-import React from 'react'
-import Routes from './routes'
+import React, { useEffect, useState } from 'react'
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+    HomeScreen,
+    MessageScreen,
+    SearchScreen,
+    ProfileScreen,
+    MessageDetailScreen,
+    LoginScreen,
+    RegisterScreen,
+    SplashScreen
+} from './pages';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+
+const TabStack = () => {
+    return (
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+
+                    switch (route.name) {
+                        case 'Home':
+                            iconName = focused ? 'home' : 'home-outline'
+                            break;
+                        case 'Search':
+                            iconName = focused ? 'search' : 'search-outline'
+                            break;
+                        case 'Profile':
+                            iconName = focused ? 'person-circle' : 'person-circle-outline'
+                    }
+
+                    return <Ionicon name={iconName} size={size} color={color} />
+                },
+                tabBarActiveTintColor: "#1D9BF0",
+                tabBarInactiveTintColor: "#000",
+            })}>
+            <Tab.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{ headerShown: false }}
+            />
+            <Tab.Screen
+                name="Search"
+                component={SearchScreen}
+                options={{ headerShown: false }}
+            />
+            <Tab.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{ headerShown: false }}
+            />
+        </Tab.Navigator>
+    )
+}
+
+// stack nav jika user sudah login
+const StackLoginScreen = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="SplashScreen"
+                options={{ headerShown: false }}
+            >
+                {(navigation) => <SplashScreen {...navigation} screen="TabScreen" />}
+                </Stack.Screen>
+            <Stack.Screen
+                name="TabScreen"
+                component={TabStack}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="Message"
+                component={MessageScreen}
+                options={{
+                    headerTransparent: true,
+                    headerBackTitleVisible: false,
+                    headerTitle: false,
+                    headerTintColor: '#000',
+                    headerShadowVisible: false,
+                    headerTitleAlign: 'center',
+                    headerBackVisible: false,
+                }}
+            />
+            <Stack.Screen
+                name="MessageDetail"
+                component={MessageDetailScreen}
+            />
+        </Stack.Navigator>
+    )
+}
+
+// stack nav jika user belum login
+const StackNotLoginScreen = () => {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="SplashScreen"
+                options={{ headerShown: false }}
+            >
+                {(navigation) => <SplashScreen {...navigation} screen="Login" />}
+                </Stack.Screen>
+            <Stack.Screen
+                name="Login"
+                component={LoginScreen}
+            />
+            <Stack.Screen
+                name="Register"
+                component={RegisterScreen}
+            />
+            <Stack.Screen
+                name="TabScreen"
+                component={TabStack}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="Message"
+                component={MessageScreen}
+                options={{
+                    headerTransparent: true,
+                    headerBackTitleVisible: false,
+                    headerTitle: false,
+                    headerTintColor: '#000',
+                    headerShadowVisible: false,
+                    headerTitleAlign: 'center',
+                    headerBackVisible: false,
+                }}
+            />
+            <Stack.Screen
+                name="MessageDetail"
+                component={MessageDetailScreen}
+            />
+        </Stack.Navigator>
+    )
+}
 
 const App = () => {
-  return <Routes/>
+    const [isLogin, setIsLogin] = useState()
+
+    const cekLogin = async () => {
+        await AsyncStorage.getItem('akun')
+            .then(value => value != null ? setIsLogin(JSON.parse(value)) : console.log('doesnt exists!'))
+    }
+
+    useEffect(() => {
+        cekLogin();
+    }, [])
+
+    return (
+        <NavigationContainer>
+            {isLogin ? (
+                <StackLoginScreen/>
+            ) : (
+                <StackNotLoginScreen/>
+            )}
+        </NavigationContainer>
+    )
 }
 
 export default App
