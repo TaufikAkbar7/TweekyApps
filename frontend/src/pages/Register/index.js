@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Pressable } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Input } from 'react-native-elements'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import auth from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 
 const RegisterScreen = ({ navigation }) => {
@@ -19,8 +19,8 @@ const RegisterScreen = ({ navigation }) => {
     const empty = () => {
         if (
           email === '' ||
-          pass === '' ||
-          pass1 === '' ||
+          password === '' ||
+          confirmPassword === '' ||
           username === '' ||
           name === ''
         ) {
