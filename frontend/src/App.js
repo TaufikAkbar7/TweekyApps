@@ -14,6 +14,9 @@ import {
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Provider } from 'react-redux';
+import store from './config/redux/store';
+import auth from '@react-native-firebase/auth';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -64,80 +67,84 @@ const TabStack = () => {
 // stack nav jika user sudah login
 const StackLoginScreen = () => {
     return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="SplashScreen"
-                options={{ headerShown: false }}
-            >
-                {(navigation) => <SplashScreen {...navigation} screen="TabScreen" />}
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen
+                    name="SplashScreen"
+                    options={{ headerShown: false }}
+                >
+                    {(navigation) => <SplashScreen {...navigation} screen="TabScreen" />}
                 </Stack.Screen>
-            <Stack.Screen
-                name="TabScreen"
-                component={TabStack}
-                options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name="Message"
-                component={MessageScreen}
-                options={{
-                    headerTransparent: true,
-                    headerBackTitleVisible: false,
-                    headerTitle: false,
-                    headerTintColor: '#000',
-                    headerShadowVisible: false,
-                    headerTitleAlign: 'center',
-                    headerBackVisible: false,
-                }}
-            />
-            <Stack.Screen
-                name="MessageDetail"
-                component={MessageDetailScreen}
-            />
-        </Stack.Navigator>
+                <Stack.Screen
+                    name="TabScreen"
+                    component={TabStack}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Message"
+                    component={MessageScreen}
+                    options={{
+                        headerTransparent: true,
+                        headerBackTitleVisible: false,
+                        headerTitle: false,
+                        headerTintColor: '#000',
+                        headerShadowVisible: false,
+                        headerTitleAlign: 'center',
+                        headerBackVisible: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="MessageDetail"
+                    component={MessageDetailScreen}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
     )
 }
 
 // stack nav jika user belum login
 const StackNotLoginScreen = () => {
     return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="SplashScreen"
-                options={{ headerShown: false }}
-            >
-                {(navigation) => <SplashScreen {...navigation} screen="Login" />}
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen
+                    name="SplashScreen"
+                    options={{ headerShown: false }}
+                >
+                    {(navigation) => <SplashScreen {...navigation} screen="Login" />}
                 </Stack.Screen>
-            <Stack.Screen
-                name="Login"
-                component={LoginScreen}
-            />
-            <Stack.Screen
-                name="Register"
-                component={RegisterScreen}
-            />
-            <Stack.Screen
-                name="TabScreen"
-                component={TabStack}
-                options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name="Message"
-                component={MessageScreen}
-                options={{
-                    headerTransparent: true,
-                    headerBackTitleVisible: false,
-                    headerTitle: false,
-                    headerTintColor: '#000',
-                    headerShadowVisible: false,
-                    headerTitleAlign: 'center',
-                    headerBackVisible: false,
-                }}
-            />
-            <Stack.Screen
-                name="MessageDetail"
-                component={MessageDetailScreen}
-            />
-        </Stack.Navigator>
+                <Stack.Screen
+                    name="Login"
+                    component={LoginScreen}
+                />
+                <Stack.Screen
+                    name="Register"
+                    component={RegisterScreen}
+                />
+                <Stack.Screen
+                    name="TabScreen"
+                    component={TabStack}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Message"
+                    component={MessageScreen}
+                    options={{
+                        headerTransparent: true,
+                        headerBackTitleVisible: false,
+                        headerTitle: false,
+                        headerTintColor: '#000',
+                        headerShadowVisible: false,
+                        headerTitleAlign: 'center',
+                        headerBackVisible: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="MessageDetail"
+                    component={MessageDetailScreen}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
     )
 }
 
@@ -145,22 +152,30 @@ const App = () => {
     const [isLogin, setIsLogin] = useState()
 
     const cekLogin = async () => {
-        await AsyncStorage.getItem('akun')
+        await AsyncStorage.getItem('UserData')
             .then(value => value != null ? setIsLogin(JSON.parse(value)) : console.log('doesnt exists!'))
     }
 
     useEffect(() => {
+        // auth().onAuthStateChanged((user) => {
+        //     if(!user){
+        //         setIsLogin(false)
+        //     } else {
+        //         setIsLogin(true)
+        //     }
+        //     console.log(user)
+        // })
         cekLogin();
     }, [])
 
     return (
-        <NavigationContainer>
+        <Provider store={store}>
             {isLogin ? (
-                <StackLoginScreen/>
+                <StackLoginScreen />
             ) : (
-                <StackNotLoginScreen/>
+                <StackNotLoginScreen />
             )}
-        </NavigationContainer>
+        </Provider>
     )
 }
 

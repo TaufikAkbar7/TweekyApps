@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, Pressable } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Input } from 'react-native-elements'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import auth from '@react-native-firebase/auth'
-import firestore from '@react-native-firebase/firestore'
+import { register } from '../../config/redux/actions'
+import { useDispatch, useSelector } from 'react-redux'
 
 const RegisterScreen = ({ navigation }) => {
 
@@ -15,48 +15,27 @@ const RegisterScreen = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState();
     const [show, setShow] = useState(true);
     const [show1, setShow1] = useState(true);
+    const userRegister = useSelector((state) => state.userRegister);
+    const { loading, error, user } = userRegister;
+    const dispatch = useDispatch();
 
     const empty = () => {
         if (
-          email === '' ||
-          password === '' ||
-          confirmPassword === '' ||
-          username === '' ||
-          name === ''
+            email === '' ||
+            password === '' ||
+            confirmPassword === '' ||
+            username === '' ||
+            name === ''
         ) {
-          return true;
+            return true;
         } else {
-          return false;
+            return false;
         }
-      };
+    };
 
     const onSubmit = () => {
-
-        if (password != confirmPassword) {
-            alert('confirm password not match!');
-        } else {
-            auth().createUserWithEmailAndPassword(email, password)
-                .then(() => {
-                    firestore().collection('user').doc(auth().currentUser.uid)
-                        .set({
-                            name,
-                            username,
-                            email,
-                            password
-                        })
-                })
-                .catch(err => {
-                    if (err.code === 'auth/email-already-in-use') {
-                        console.log('That email address is already in use!');
-                    }
-                    if (error.code === 'auth/invalid-email') {
-                        console.log('That email address is invalid!');
-                    }
-
-                    console.error(error);
-                })
-            navigation.navigate("Login")
-        }
+        dispatch(register(name, username, email, password))
+        navigation.navigate("Login")
     }
 
     return (
@@ -68,109 +47,117 @@ const RegisterScreen = ({ navigation }) => {
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}>
-                    <View style={{
-                        width: 340,
-                        // backgroundColor: 'blue',
-                        padding: 5,
-                    }}>
-                        <View>
-                            <Input
-                                label="Username"
-                                // errorMessage="Oops! that's not correct."
-                                placeholder="Enter Username"
-                                disabledInputStyle={{ background: "#ddd" }}
-                                onChangeText={e => setUsername(e)}
-                                value={username}
-                                labelStyle={{
-                                    color: '#000',
-                                    fontWeight: 'bold'
-                                }}
-                            />
-                        </View>
-                        <View>
-                            <Input
-                                label="Name"
-                                // errorMessage="Oops! that's not correct."
-                                placeholder="Enter Name"
-                                disabledInputStyle={{ background: "#ddd" }}
-                                onChangeText={e => setName(e)}
-                                value={name}
-                                labelStyle={{
-                                    color: '#000',
-                                    fontWeight: 'bold'
-                                }}
-                            />
-                        </View>
-                        <View>
-                            <Input
-                                label="Email"
-                                // errorMessage="Oops! that's not correct."
-                                placeholder="Enter Email"
-                                disabledInputStyle={{ background: "#ddd" }}
-                                onChangeText={e => setEmail(e)}
-                                value={email}
-                                labelStyle={{
-                                    color: '#000',
-                                    fontWeight: 'bold'
-                                }}
-                            />
-                        </View>
-                        <View>
-                            <Input
-                                label="Password"
-                                // errorMessage="Oops! that's not correct."
-                                placeholder="Enter Password"
-                                placeholder="********"
-                                secureTextEntry={show}
-                                disabledInputStyle={{ background: "#ddd" }}
-                                onChangeText={e => setPassword(e)}
-                                value={password}
-                                labelStyle={{
-                                    color: '#000',
-                                    fontWeight: 'bold'
-                                }}
-                                rightIcon={(
-                                    <TouchableOpacity onPress={() => setShow(!show)}>
-                                        <MaterialIcons name={!show ? 'visibility' : 'visibility-off'} size={25} />
-                                    </TouchableOpacity>
-                                )}
-                            />
-                        </View>
-                        <View>
-                            <Input
-                                label="Confirm Password"
-                                // errorMessage="Oops! that's not correct."
-                                placeholder="Enter Confirm Password"
-                                placeholder="********"
-                                secureTextEntry={show1}
-                                disabledInputStyle={{ background: "#ddd" }}
-                                onChangeText={e => setConfirmPassword(e)}
-                                value={confirmPassword}
-                                labelStyle={{
-                                    color: '#000',
-                                    fontWeight: 'bold'
-                                }}
-                                rightIcon={(
-                                    <TouchableOpacity onPress={() => setShow1(!show1)}>
-                                        <MaterialIcons name={!show1 ? 'visibility' : 'visibility-off'} size={25} />
-                                    </TouchableOpacity>
-                                )}
-                            />
-                        </View>
-                        <View style={{ padding: 10 }}>
-                            <Pressable onPress={() => onSubmit()} disabled={empty()}>
-                                <View style={{
-                                    backgroundColor: "#1D9BF0",
-                                    padding: 5,
-                                    paddingVertical: 10,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}>
-                                    <Text style={{ color: '#FFFFFF', fontSize: 16 }}>Register</Text>
+                    {loading ? (
+                        <Text>loading...</Text>
+                    ) : error ? (
+                        <Text>{error}</Text>
+                    ) : (
+                        <>
+                            <View style={{
+                                width: 340,
+                                // backgroundColor: 'blue',
+                                padding: 5,
+                            }}>
+                                <View>
+                                    <Input
+                                        label="Username"
+                                        // errorMessage="Oops! that's not correct."
+                                        placeholder="Enter Username"
+                                        disabledInputStyle={{ background: "#ddd" }}
+                                        onChangeText={e => setUsername(e)}
+                                        value={username}
+                                        labelStyle={{
+                                            color: '#000',
+                                            fontWeight: 'bold'
+                                        }}
+                                    />
                                 </View>
-                            </Pressable>
-                        </View>
-                    </View>
+                                <View>
+                                    <Input
+                                        label="Name"
+                                        // errorMessage="Oops! that's not correct."
+                                        placeholder="Enter Name"
+                                        disabledInputStyle={{ background: "#ddd" }}
+                                        onChangeText={e => setName(e)}
+                                        value={name}
+                                        labelStyle={{
+                                            color: '#000',
+                                            fontWeight: 'bold'
+                                        }}
+                                    />
+                                </View>
+                                <View>
+                                    <Input
+                                        label="Email"
+                                        // errorMessage="Oops! that's not correct."
+                                        placeholder="Enter Email"
+                                        disabledInputStyle={{ background: "#ddd" }}
+                                        onChangeText={e => setEmail(e)}
+                                        value={email}
+                                        labelStyle={{
+                                            color: '#000',
+                                            fontWeight: 'bold'
+                                        }}
+                                    />
+                                </View>
+                                <View>
+                                    <Input
+                                        label="Password"
+                                        // errorMessage="Oops! that's not correct."
+                                        placeholder="Enter Password"
+                                        placeholder="********"
+                                        secureTextEntry={show}
+                                        disabledInputStyle={{ background: "#ddd" }}
+                                        onChangeText={e => setPassword(e)}
+                                        value={password}
+                                        labelStyle={{
+                                            color: '#000',
+                                            fontWeight: 'bold'
+                                        }}
+                                        rightIcon={(
+                                            <TouchableOpacity onPress={() => setShow(!show)}>
+                                                <MaterialIcons name={!show ? 'visibility' : 'visibility-off'} size={25} />
+                                            </TouchableOpacity>
+                                        )}
+                                    />
+                                </View>
+                                <View>
+                                    <Input
+                                        label="Confirm Password"
+                                        // errorMessage="Oops! that's not correct."
+                                        placeholder="Enter Confirm Password"
+                                        placeholder="********"
+                                        secureTextEntry={show1}
+                                        disabledInputStyle={{ background: "#ddd" }}
+                                        onChangeText={e => setConfirmPassword(e)}
+                                        value={confirmPassword}
+                                        labelStyle={{
+                                            color: '#000',
+                                            fontWeight: 'bold'
+                                        }}
+                                        rightIcon={(
+                                            <TouchableOpacity onPress={() => setShow1(!show1)}>
+                                                <MaterialIcons name={!show1 ? 'visibility' : 'visibility-off'} size={25} />
+                                            </TouchableOpacity>
+                                        )}
+                                    />
+                                </View>
+                                <View style={{ padding: 10 }}>
+                                    <Pressable onPress={() => onSubmit()} disabled={empty()}>
+                                        <View style={{
+                                            backgroundColor: "#1D9BF0",
+                                            padding: 5,
+                                            paddingVertical: 10,
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}>
+                                            <Text style={{ color: '#FFFFFF', fontSize: 16 }}>Register</Text>
+                                        </View>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </>
+                    )}
                 </View>
             </View>
         </SafeAreaProvider>

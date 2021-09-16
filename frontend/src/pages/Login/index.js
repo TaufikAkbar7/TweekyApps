@@ -3,51 +3,15 @@ import { View, TouchableOpacity, Pressable, Text } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Input } from 'react-native-elements'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import auth from '@react-native-firebase/auth'
+import { login } from '../../config/redux/actions'
+import { useDispatch } from "react-redux"
 
 const LoginScreen = ({ navigation }) => {
 
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [show, setShow] = useState(true);
-
-    const onSubmit = async () => {
-        try {
-            auth()
-                .signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    try {
-                        let dataAkun = {
-                            email: email,
-                            password: password
-                        }
-                        AsyncStorage.setItem('akun', JSON.stringify(dataAkun))
-                        navigation.navigate('TabScreen', { screen: 'Home' })
-                    } catch (error) {
-                        console.log(err)
-                    }
-                })
-                .catch((err => {
-                    switch (err.code) {
-                        case 'auth/invalid-email':
-                            alert('email address is not valid')
-                            break;
-                        case 'auth/user-disabled':
-                            alert('email has been disabled')
-                            break;
-                        case 'auth/user-not-found':
-                            alert('user not found')
-                            break;
-                        case 'auth/wrong-password':
-                            alert('password is invalid, try again')
-                            break;
-                    }
-                }))
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    const dispatch = useDispatch()
 
     // const onLogout = async () => {
     //     try {
@@ -60,7 +24,7 @@ const LoginScreen = ({ navigation }) => {
 
     // const getData = async () => {
     //     try {
-    //         await AsyncStorage.getItem('akun')
+    //         await AsyncStorage.setItem('UserData', {})
     //         .then(response => {
     //             return response != null ? JSON.parse(response) : null
     //         })
@@ -70,9 +34,10 @@ const LoginScreen = ({ navigation }) => {
     //     }
     // }
 
-    // useEffect(() => {
-    //     getData();
-    // }, [])
+    const onSubmit = () => {
+        dispatch(login(email, password))
+        navigation.navigate("TabScreen", { screen: "Home" })
+    }
 
     return (
         <SafeAreaProvider>

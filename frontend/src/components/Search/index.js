@@ -1,14 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { SearchBar } from 'react-native-elements'
 
-const Search = ({ placeholder }) => {
-
-    const [data, setData] = useState();
+const Search = ({ placeholder, getUsers }) => {
 
     return (
         <SearchBar
         placeholder={placeholder}
-        onChangeText={(e) => setData(e)}
+        onChangeText={(e) => getUsers(e)}
         value={data}
         searchIcon={{ size: 20 }}
         containerStyle={{
