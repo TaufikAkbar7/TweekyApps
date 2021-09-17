@@ -8,7 +8,10 @@ import {
     USER_REGISTER_SUCCESS,
     GET_USER_DATA_REQUEST,
     GET_USER_DATA_SUCCESS,
-    GET_USER_DATA_FAIL
+    GET_USER_DATA_FAIL,
+    GET_USER_PROFILE_REQUEST,
+    GET_USER_PROFILE_SUCCESS,
+    GET_USER_PROFILE_FAIL
 } from '../constants'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
@@ -66,7 +69,8 @@ export const register = (name, username, email, password) => (dispatch) => {
                 name: name,
                 username: username,
                 email: email,
-                password: password
+                password: password,
+                bio: null
             }
             firestore()
             .collection('user')
@@ -104,17 +108,33 @@ export const getUser = () => (dispatch) => {
        firestore()
        .collection('user')
        .doc(auth().currentUser.uid)
-       .get()
-       .then(snapshot => {
+       .onSnapshot(snapshot => {
            if(snapshot.exists) {
             dispatch({ type: GET_USER_DATA_SUCCESS, payload: snapshot.data()})
            } else {
               console.log('user doest exists')
            }
-       })
-        
+       })    
     } catch (error) {
         dispatch({ type: GET_USER_DATA_FAIL, payload: error })
+    }
+}
+
+export const getUserProfile = (uid) => (dispatch) => {
+    dispatch({ type: GET_USER_PROFILE_REQUEST })
+    try {
+       firestore()
+       .collection('user')
+       .doc(uid)
+       .onSnapshot(snapshot => {
+           if(snapshot.exists) {
+            dispatch({ type: GET_USER_PROFILE_SUCCESS, payload: snapshot.data()})
+           } else {
+              console.log('user doest exists')
+           }
+       })    
+    } catch (error) {
+        dispatch({ type: GET_USER_PROFILE_FAIL, payload: error })
     }
 }
 

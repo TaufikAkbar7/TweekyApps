@@ -59,92 +59,14 @@ const TabStack = () => {
                 name="Profile"
                 component={ProfileScreen}
                 options={{ headerShown: false }}
+                listeners={({ navigation }) => ({
+                    tabPress: e => {
+                        e.preventDefault();
+                        navigation.navigate("Profile", { uid: auth().currentUser.uid })
+                    }
+                })}
             />
         </Tab.Navigator>
-    )
-}
-
-// stack nav jika user sudah login
-const StackLoginScreen = () => {
-    return (
-        <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen
-                    name="SplashScreen"
-                    options={{ headerShown: false }}
-                >
-                    {(navigation) => <SplashScreen {...navigation} screen="TabScreen" />}
-                </Stack.Screen>
-                <Stack.Screen
-                    name="TabScreen"
-                    component={TabStack}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="Message"
-                    component={MessageScreen}
-                    options={{
-                        headerTransparent: true,
-                        headerBackTitleVisible: false,
-                        headerTitle: false,
-                        headerTintColor: '#000',
-                        headerShadowVisible: false,
-                        headerTitleAlign: 'center',
-                        headerBackVisible: false,
-                    }}
-                />
-                <Stack.Screen
-                    name="MessageDetail"
-                    component={MessageDetailScreen}
-                />
-            </Stack.Navigator>
-        </NavigationContainer>
-    )
-}
-
-// stack nav jika user belum login
-const StackNotLoginScreen = () => {
-    return (
-        <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen
-                    name="SplashScreen"
-                    options={{ headerShown: false }}
-                >
-                    {(navigation) => <SplashScreen {...navigation} screen="Login" />}
-                </Stack.Screen>
-                <Stack.Screen
-                    name="Login"
-                    component={LoginScreen}
-                />
-                <Stack.Screen
-                    name="Register"
-                    component={RegisterScreen}
-                />
-                <Stack.Screen
-                    name="TabScreen"
-                    component={TabStack}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="Message"
-                    component={MessageScreen}
-                    options={{
-                        headerTransparent: true,
-                        headerBackTitleVisible: false,
-                        headerTitle: false,
-                        headerTintColor: '#000',
-                        headerShadowVisible: false,
-                        headerTitleAlign: 'center',
-                        headerBackVisible: false,
-                    }}
-                />
-                <Stack.Screen
-                    name="MessageDetail"
-                    component={MessageDetailScreen}
-                />
-            </Stack.Navigator>
-        </NavigationContainer>
     )
 }
 
@@ -153,28 +75,70 @@ const App = () => {
 
     const cekLogin = async () => {
         await AsyncStorage.getItem('UserData')
-            .then(value => value != null ? setIsLogin(JSON.parse(value)) : console.log('doesnt exists!'))
+            .then(value => {
+                if (!value) {
+                    console.log('User doesnt exist!')
+                } else {
+                    setIsLogin(JSON.parse(value))
+                }
+            })
     }
 
     useEffect(() => {
-        // auth().onAuthStateChanged((user) => {
-        //     if(!user){
-        //         setIsLogin(false)
-        //     } else {
-        //         setIsLogin(true)
-        //     }
-        //     console.log(user)
-        // })
         cekLogin();
     }, [])
 
     return (
         <Provider store={store}>
-            {isLogin ? (
-                <StackLoginScreen />
-            ) : (
-                <StackNotLoginScreen />
-            )}
+            <NavigationContainer>
+                <Stack.Navigator>
+                    {isLogin ? (
+                        <Stack.Screen
+                            name="SplashScreen"
+                            options={{ headerShown: false }}
+                        >
+                            {(navigation) => <SplashScreen {...navigation} screen="TabScreen" />}
+                        </Stack.Screen>
+                    ) : (
+                        <Stack.Screen
+                            name="SplashScreen"
+                            options={{ headerShown: false }}
+                        >
+                            {(navigation) => <SplashScreen {...navigation} screen="Login" />}
+                        </Stack.Screen>
+                    )}
+                    <Stack.Screen
+                        name="Login"
+                        component={LoginScreen}
+                    />
+                    <Stack.Screen
+                        name="Register"
+                        component={RegisterScreen}
+                    />
+                    <Stack.Screen
+                        name="TabScreen"
+                        component={TabStack}
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                        name="Message"
+                        component={MessageScreen}
+                        options={{
+                            headerTransparent: true,
+                            headerBackTitleVisible: false,
+                            headerTitle: false,
+                            headerTintColor: '#000',
+                            headerShadowVisible: false,
+                            headerTitleAlign: 'center',
+                            headerBackVisible: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="MessageDetail"
+                        component={MessageDetailScreen}
+                    />
+                </Stack.Navigator>
+            </NavigationContainer>
         </Provider>
     )
 }

@@ -43,6 +43,7 @@ const HomeScreen = ({ navigation }) => {
         dispatch(getUser())
     }, [dispatch])
 
+
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -171,7 +172,10 @@ const HomeScreen = ({ navigation }) => {
                                 </View>
                             </TouchableOpacity>
                             <View>
-                                <Pressable onPress={() => setIsVisible(false)}>
+                                <Pressable onPress={() => {
+                                    setIsVisible(false)
+                                    setCaption('')
+                                }}>
                                     <AntIcon name="close" size={25} color="#000" />
                                 </Pressable>
                             </View>

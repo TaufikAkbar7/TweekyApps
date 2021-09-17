@@ -13,27 +13,6 @@ const LoginScreen = ({ navigation }) => {
     const [show, setShow] = useState(true);
     const dispatch = useDispatch()
 
-    // const onLogout = async () => {
-    //     try {
-    //         await AsyncStorage.removeItem('akun')
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    //     alert('logout')
-    // }
-
-    // const getData = async () => {
-    //     try {
-    //         await AsyncStorage.setItem('UserData', {})
-    //         .then(response => {
-    //             return response != null ? JSON.parse(response) : null
-    //         })
-
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // }
-
     const onSubmit = () => {
         dispatch(login(email, password))
         navigation.navigate("TabScreen", { screen: "Home" })

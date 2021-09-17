@@ -1,13 +1,16 @@
 import React from 'react'
 import { SearchBar } from 'react-native-elements'
 
-const Search = ({ placeholder, getUsers }) => {
+const Search = ({ placeholder, getUsers, keyword, setKeyword }) => {
 
     return (
         <SearchBar
         placeholder={placeholder}
-        onChangeText={(e) => getUsers(e)}
-        value={data}
+        onChangeText={(e) => {
+            setKeyword(e)
+            getUsers(e)
+        }}
+        value={keyword}
         searchIcon={{ size: 20 }}
         containerStyle={{
             backgroundColor: 'transparent',
