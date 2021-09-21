@@ -11,11 +11,16 @@ import {
     GET_USER_DATA_FAIL,
     GET_USER_PROFILE_REQUEST,
     GET_USER_PROFILE_SUCCESS,
-    GET_USER_PROFILE_FAIL
+    GET_USER_PROFILE_FAIL,
+    FOREIGN_USER_PROFILE_REQUEST,
+    FOREIGN_USER_PROFILE_SUCCESS,
+    FOREIGN_USER_PROFILE_FAIL,
+    FOREIGN_POST_PROFILE_SUCCESS
 } from '../constants'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { listPostProfile } from '../actions'
 
 export const login = (email, password) => async (dispatch) => {
     dispatch({ type: USER_LOGIN_REQUEST });
@@ -120,23 +125,29 @@ export const getUser = () => (dispatch) => {
     }
 }
 
-export const getUserProfile = (uid) => (dispatch) => {
+export const getUserProfile = (uid, getPosts) => (dispatch, getState) => {
     dispatch({ type: GET_USER_PROFILE_REQUEST })
     try {
-       firestore()
-       .collection('user')
-       .doc(uid)
-       .onSnapshot(snapshot => {
-           if(snapshot.exists) {
-            dispatch({ type: GET_USER_PROFILE_SUCCESS, payload: snapshot.data()})
-           } else {
-              console.log('user doest exists')
-           }
-       })    
-    } catch (error) {
-        dispatch({ type: GET_USER_PROFILE_FAIL, payload: error })
-    }
+        firestore()
+        .collection('user')
+        .doc(uid)
+        .onSnapshot(snapshot => {
+            if(snapshot.exists) {
+             let user = snapshot.data()
+             user.id = snapshot.id
+             dispatch({ type: GET_USER_PROFILE_SUCCESS, payload: user})
+            } else {
+               console.log('user doest exists')
+            }
+        })  
+        if(getPosts){
+            dispatch(listPostProfile(uid))
+        }  
+     } catch (error) {
+         dispatch({ type: GET_USER_PROFILE_FAIL, payload: error })
+     }
 }
+
 
 export const logout = () => (dispatch) => {
     try {

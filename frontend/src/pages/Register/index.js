@@ -5,6 +5,7 @@ import { Input } from 'react-native-elements'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { register } from '../../config/redux/actions'
 import { useDispatch, useSelector } from 'react-redux'
+import { Spinner } from '../../components'
 
 const RegisterScreen = ({ navigation }) => {
 
@@ -48,7 +49,7 @@ const RegisterScreen = ({ navigation }) => {
                     alignItems: 'center'
                 }}>
                     {loading ? (
-                        <Text>loading...</Text>
+                        <Spinner/>
                     ) : error ? (
                         <Text>{error}</Text>
                     ) : (

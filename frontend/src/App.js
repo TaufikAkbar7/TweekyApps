@@ -9,7 +9,8 @@ import {
     MessageDetailScreen,
     LoginScreen,
     RegisterScreen,
-    SplashScreen
+    SplashScreen,
+    ForeignProfile
 } from './pages';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -59,12 +60,12 @@ const TabStack = () => {
                 name="Profile"
                 component={ProfileScreen}
                 options={{ headerShown: false }}
-                listeners={({ navigation }) => ({
-                    tabPress: e => {
-                        e.preventDefault();
-                        navigation.navigate("Profile", { uid: auth().currentUser.uid })
-                    }
-                })}
+                // listeners={({ navigation }) => ({
+                //     tabPress: e => {
+                //         e.preventDefault();
+                //         navigation.navigate("Profile", { uid: auth().currentUser.uid })
+                //     }
+                // })}
             />
         </Tab.Navigator>
     )
@@ -136,6 +137,20 @@ const App = () => {
                     <Stack.Screen
                         name="MessageDetail"
                         component={MessageDetailScreen}
+                    />
+                    <Stack.Screen
+                        name="UserProfile"
+                        component={ForeignProfile}
+                        options={{
+                            headerTransparent: true,
+                            headerBackTitleVisible: false,
+                            headerTitle: false,
+                            headerTintColor: '#FFFFFF',
+                            headerShadowVisible: false,
+                            headerTitleAlign: 'center',
+                            headerBackVisible: true,
+                            title: ''
+                        }}
                     />
                 </Stack.Navigator>
             </NavigationContainer>

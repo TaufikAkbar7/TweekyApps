@@ -1,14 +1,15 @@
-import { createStore, applyMiddleware, combineReducers } from "redux";
+import { createStore, applyMiddleware, combineReducers, compose } from "redux";
 import thunk from "redux-thunk";
 import { 
     listPostReducer,
-    listPostProfileReducer 
+    listPostProfileReducer,
+    userFollowingReducer
 } from "./reducers/postReducers"
 import {
     loginReducer,
     registerReducer,
     userDataReducer,
-    userDataProfileReducer
+    userDataProfileReducer,
 } from "./reducers/userReducers"
 
 // const initialState = {
@@ -19,17 +20,21 @@ import {
 //     }
 // }
 
+// const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+
+
 const reducer = combineReducers({
     userLogin: loginReducer,
     userRegister: registerReducer,
     userListPost: listPostReducer,
     userData: userDataReducer,
     userProfile: userDataProfileReducer,
-    userPostProfile: listPostProfileReducer
+    userPostProfile: listPostProfileReducer,
+    userFollowing: userFollowingReducer,
 })
 const store = createStore(
     reducer,
-    // initialState,
+    // composeEnhancers(applyMiddleware(thunk)),
     applyMiddleware(thunk)
 );
 

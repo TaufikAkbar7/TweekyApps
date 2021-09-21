@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 
-export const Follow = ({ left, right }) => {
+export const Follow = ({ left, right, onClick }) => {
     return (
         <View style={{
             backgroundColor: '#1D9BF0',
@@ -11,18 +11,22 @@ export const Follow = ({ left, right }) => {
             left: left,
             right: right
         }}>
-            <Text style={{
-                color: '#FFFFFF',
-                fontSize: 15,
-                fontWeight: 'bold'
-            }}>
-                Follow</Text>
+            <Pressable onPress={onClick}>
+                <Text style={{
+                    color: '#FFFFFF',
+                    fontSize: 15,
+                    fontWeight: 'bold'
+                }}>
+                    Follow</Text>
+            </Pressable>
         </View>
+
     )
 }
 
-export const Following = ({ left, right }) => {
+export const Following = ({ left, right, onClick }) => {
     return (
+
         <View style={{
             backgroundColor: 'transparent',
             padding: 5,
@@ -32,12 +36,15 @@ export const Following = ({ left, right }) => {
             left: left,
             right: right
         }}>
-            <Text style={{
-                color: '#1D9BF0',
-                fontSize: 15,
-                fontWeight: 'bold'
-            }}>
-                Following</Text>
+            <Pressable onPress={onClick}>
+                <Text style={{
+                    color: '#1D9BF0',
+                    fontSize: 15,
+                    fontWeight: 'bold'
+                }}>
+                    Following</Text>
+            </Pressable>
         </View>
+
     )
 }

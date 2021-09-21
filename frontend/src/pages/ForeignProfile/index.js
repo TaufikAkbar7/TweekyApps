@@ -4,20 +4,21 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Avatar, BottomSheet, Input } from 'react-native-elements'
 import AntIcon from 'react-native-vector-icons/AntDesign'
 import { useSelector, useDispatch } from "react-redux"
-import { listPost, getUser } from '../../config/redux/actions'
+import { fetchUserFollowing } from '../../config/redux/actions'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Cards, Spinner } from '../../components'
+import { Cards, Follow, Following, Spinner } from '../../components'
 
-const ProfileScreen = ({ navigation }) => {
+const ForeignProfile = ({ navigation, route }) => {
     const [isVisible, setIsVisible] = useState(false)
     const [name, setName] = useState()
     const [bio, setBio] = useState()
-    const userData = useSelector((state) => state.userData)
-    const userListPost = useSelector((state) => state.userListPost)
-    const { user } = userData
-    const { listUserPost, loading } = userListPost
+    const [following, setFollowing] = useState(false)
+    const [posts, setPosts] = useState([])
+    const [user, setUser] = useState([])
+    const userFollowing = useSelector((state) => state.userFollowing)
+    const { listUserPost: userFollow, loading } = userFollowing
+    const { uid } = route.params
     const dispatch = useDispatch()
 
     const onSave = () => {
@@ -34,22 +35,66 @@ const ProfileScreen = ({ navigation }) => {
         }
     }
 
-    const onLogout = async () => {
-        try {
-            await AsyncStorage.removeItem("UserData")
-            auth().signOut()
-            navigation.navigate("Login")
-        } catch (error) {
-            console.log(error)
-        }
-        alert('logout')
+    const onFollow = () => {
+        firestore()
+            .collection("following")
+            .doc(auth().currentUser.uid)
+            .collection("userFollowing")
+            .doc(uid)
+            .set({})
+    }
+    const onUnfollow = () => {
+        firestore()
+            .collection("following")
+            .doc(auth().currentUser.uid)
+            .collection("userFollowing")
+            .doc(uid)
+            .delete()
     }
 
     useEffect(() => {
-        dispatch(listPost())
-        dispatch(getUser())
-    }, [dispatch])
+        dispatch(fetchUserFollowing())
+        
+        try {
+            if (userFollow.indexOf(uid) > -1) {
+                setFollowing(true)
+            } else {
+                setFollowing(false)
+            }
+        } catch (error) {
+            console.log(error)
+        }
 
+        firestore()
+            .collection('user')
+            .doc(uid)
+            .onSnapshot(snapshot => {
+                if (snapshot.exists) {
+                    let user = snapshot.data()
+                    user.id = snapshot.id
+                    setUser(user)
+                } else {
+                    console.log('user doest exists')
+                }
+            })
+        firestore()
+            .collection('posts')
+            .doc(uid)
+            .collection('userPosts')
+            .orderBy('createAt', 'desc')
+            .onSnapshot((snapshot) => {
+                let getData = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    return { id, ...data }
+                })
+                setPosts(getData)
+            })
+
+    }, [dispatch, uid])
+
+    // console.log(userForeign)
+    // console.log(posts)
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -60,7 +105,7 @@ const ProfileScreen = ({ navigation }) => {
                 justifyContent: 'center',
                 alignItems: 'center'
             }}>
-                {userListPost && user && listUserPost && listUserPost.length > 0 ? (
+                {userFollow && user && posts && posts.length > 0 ? (
                     <ScrollView>
                         <View style={{ width: 360 }}>
 
@@ -169,38 +214,11 @@ const ProfileScreen = ({ navigation }) => {
                                                     </View>
                                                 </View>
                                             </BottomSheet>
-                                            <View>
-                                                <Pressable onPress={() => setIsVisible(true)}>
-                                                    <View style={{
-                                                        backgroundColor: '#1D9BF0',
-                                                        paddingVertical: 5,
-                                                        paddingHorizontal: 10,
-                                                        borderRadius: 8,
-                                                    }}>
-                                                        <Text style={{
-                                                            color: "#FFFFFF",
-                                                            fontSize: 15
-                                                        }}>
-                                                            Edit profile</Text>
-                                                    </View>
-                                                </Pressable>
-                                            </View>
-                                            <View>
-                                                <Pressable onPress={onLogout}>
-                                                    <View style={{
-                                                        backgroundColor: 'red',
-                                                        paddingVertical: 5,
-                                                        paddingHorizontal: 10,
-                                                        borderRadius: 8,
-                                                    }}>
-                                                        <Text style={{
-                                                            color: "#FFFFFF",
-                                                            fontSize: 15
-                                                        }}>
-                                                            Logout</Text>
-                                                    </View>
-                                                </Pressable>
-                                            </View>
+                                            {following ? (
+                                                <Following left={100} onClick={() => onUnfollow()} />
+                                            ) : (
+                                                <Follow left={100} onClick={() => onFollow()} />
+                                            )}
                                         </View>
                                     </View>
                                     <View style={{
@@ -253,7 +271,7 @@ const ProfileScreen = ({ navigation }) => {
                                 borderTopWidth: 1,
                                 borderColor: '#A9A9B0'
                             }}>
-                                <Cards listData={listUserPost} userData={user} left={170} />
+                                <Cards listData={posts} userData={user} left={200} />
                             </View>
                         </View>
                     </ScrollView>
@@ -267,4 +285,6 @@ const ProfileScreen = ({ navigation }) => {
     )
 }
 
-export default ProfileScreen
+
+
+export default ForeignProfile

@@ -6,6 +6,7 @@ import SearchScreen from "./Search";
 import LoginScreen from "./Login";
 import RegisterScreen from "./Register";
 import SplashScreen from './Splashscreen';
+import ForeignProfile from "./ForeignProfile";
 
 export { 
     HomeScreen, 
@@ -15,5 +16,6 @@ export {
     MessageDetailScreen,
     LoginScreen,
     RegisterScreen,
-    SplashScreen 
+    SplashScreen,
+    ForeignProfile 
 };

@@ -11,11 +11,22 @@ import {
     GET_USER_PROFILE_REQUEST,
     GET_USER_PROFILE_SUCCESS,
     GET_USER_PROFILE_FAIL,
+    FOREIGN_USER_PROFILE_REQUEST,
+    FOREIGN_USER_PROFILE_SUCCESS,
+    FOREIGN_USER_PROFILE_FAIL,
+    FOREIGN_POST_PROFILE_SUCCESS
 } from '../constants'
 
 const initialState = {
     loading: false,
     user: {},
+    posts: [],
+    error: ''
+}
+
+const initialStateUsers = {
+    loading: false,
+    users: [],
     error: ''
 }
 
@@ -58,12 +69,12 @@ export const userDataReducer = (state = initialState, action) => {
     }
 }
 
-export const userDataProfileReducer = (state = initialState, action) => {
+export const userDataProfileReducer = (state = initialStateUsers, action) => {
     switch (action.type) {
         case GET_USER_PROFILE_REQUEST:
             return { loading: true }
         case GET_USER_PROFILE_SUCCESS:
-            return { loading: false, user: action.payload }
+            return { loading: false, users: action.payload }
         case GET_USER_PROFILE_FAIL:
             return { loading: false, error: action.payload }
         default:
