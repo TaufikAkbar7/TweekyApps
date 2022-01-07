@@ -9,15 +9,20 @@ import Modal from '../Modal'
 const Cards = ({
     listData,
     userData,
-    caption,
-    setCaption,
-    onUpdate,
+    // caption,
+    // setCaption,
+    // onUpdate,
+    onComment,
     onDelete,
-    left
+    left,
+    reply,
+    changeText,
+    isVisibleComment,
+    onToggleComment,
+    onPress
 }) => {
 
     const [isVisible, setIsVisible] = useState({})
-    const [isVisibleUpdate, setIsVisibleUpdate] = useState(false)
 
     const onToggle = (id) => {
         setIsVisible(prevShown => ({
@@ -124,9 +129,24 @@ const Cards = ({
                         flexDirection: 'row',
                         top: 5,
                     }}>
-                        <View>
-                            <FontIcon name="comment-o" size={20} color="#000" />
-                        </View>
+                        <TouchableOpacity onPress={() => {
+                            onToggleComment(item.id)
+                        }}>
+                            <View>
+                                <FontIcon name="comment-o" size={20} color="#000" />
+                            </View>
+                        </TouchableOpacity>
+                        {/* modal comments */}
+                        <Modal
+                            placeholder="Tweet your reply"
+                            isVisible={isVisibleComment[item.id]}
+                            name="Post"
+                            value={reply}
+                            onChangeText={changeText}
+                            onPost={onComment}
+                            onPress={onPress}
+                        />
+                        {/* end modal comments */}
                         <View style={{ marginLeft: 35, flexDirection: 'row', alignItems: 'center' }}>
                             <AntIcon name="like2" size={20} color="#000" />
                             <Text>{item.likeCount}</Text>

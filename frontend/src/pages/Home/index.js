@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, ScrollView, Pressable, Text, FlatList } from 'react-native'
+import { View, ScrollView, Pressable, Text } from 'react-native'
 import { Title, Spinner, Cards, Modal } from '../../components'
 import { FAB } from 'react-native-elements'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -13,6 +13,8 @@ const HomeScreen = ({ navigation }) => {
 
     const [isVisiblePost, setIsVisiblePost] = useState(false)
     const [caption, setCaption] = useState()
+    const [reply, setReply] = useState()
+    const [isVisibleComment, setIsVisibleComment] = useState({})
     const userListPost = useSelector((state) => state.userListPost)
     const { loading, listUserPost, error } = userListPost
     const userData = useSelector((state) => state.userData)
@@ -49,6 +51,31 @@ const HomeScreen = ({ navigation }) => {
             .doc(id)
             .delete()
             .then(() => console.log('User deleted!'))
+    }
+
+    const onComment = (id) => {
+        // try {
+        //     firestore()
+        //         .collection('posts')
+        //         .doc(auth().currentUser.uid)
+        //         .collection('userPosts')
+        //         .doc("inWW9z2x2Y4D1Yi06qQC")
+        //         .collection('comments')
+        //         .add({
+        //             reply: reply
+        //         })
+        // } catch (error) {
+        //     console.log(error)
+        // }
+        console.log(id)
+
+    }
+
+    const onToggleComment = (id) => {
+        setIsVisibleComment(prevShown => ({
+            ...prevShown,
+            [id]: !prevShown[id]
+        }))
     }
 
     // const onUpdate = (uid) => {
@@ -112,7 +139,14 @@ const HomeScreen = ({ navigation }) => {
                                         setCaption={setCaption}
                                         onDelete={onDelete}
                                         left={150}
-                                    // onUpdate={onUpdate}
+                                        onComment={onComment}
+                                        changeText={(e) => setReply(e)}
+                                        onPress={() => {
+                                            setReply('')
+                                            setIsVisibleComment(false)
+                                        }}
+                                        onToggleComment={onToggleComment}
+                                        isVisibleComment={isVisibleComment}
                                     />
                                     {/* <Cards
                                         listData={post}
@@ -129,7 +163,14 @@ const HomeScreen = ({ navigation }) => {
                         </ScrollView>
                     </View>
                 ) : loading ? (
-                    <Spinner />
+                    <View style={{
+                        flex: 1,
+                        backgroundColor: '#F6F6F6',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                        <Spinner />
+                    </View>
                 ) : (
                     <Text>no posts</Text>
                 )}
